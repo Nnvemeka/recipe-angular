@@ -16,9 +16,7 @@ export class DataStorageService {
                 'https://prexcribe-6d944-default-rtdb.firebaseio.com/recipes.json',
                 recipes
             )
-            .subscribe(response => {
-                console.log(response)
-            })
+            .subscribe()
     }
 
     fetchRecipes() {
