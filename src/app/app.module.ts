@@ -9,7 +9,7 @@ import { HeaderComponent } from './header/header.component';
 import { AppRoutingModule } from './app-routing.module';
 import { SharedModule } from './shared/shared.module';
 import { CoreModule } from './core.module';
-import { ShoppingListReducer } from './shopping-list/store/shopping-list.reducer';
+import * as fromApp from './store/app.reducer'
 
 @NgModule({
   declarations: [
@@ -21,7 +21,7 @@ import { ShoppingListReducer } from './shopping-list/store/shopping-list.reducer
     FormsModule,
     ReactiveFormsModule,
     AppRoutingModule,
-    StoreModule.forRoot({ shoppingList: ShoppingListReducer }),
+    StoreModule.forRoot(fromApp.appReducer),
     HttpClientModule,
     SharedModule,
     CoreModule
