@@ -20,6 +20,7 @@ export class AuthComponent implements OnInit, OnDestroy{
     @ViewChild(PlaceholderDirective, {static: false}) alertHost: PlaceholderDirective 
 
     private closeSub: Subscription
+    private storeSub: Subscription
 
     constructor(
         private authService: AuthService, 
@@ -29,7 +30,7 @@ export class AuthComponent implements OnInit, OnDestroy{
         ) { }
 
         ngOnInit(): void {
-            this.store.select('auth').subscribe(authState => {
+            this.storeSub = this.store.select('auth').subscribe(authState => {
                 this.isLoading = authState.loading
                 this.error = authState.authError
                 if (this.error) {
@@ -49,36 +50,27 @@ export class AuthComponent implements OnInit, OnDestroy{
         const email = form.value.email
         const password = form.value.password
 
-        let authObs: Observable<AuthResponseData>
-
-        this.isLoading = true
         if (this.isLoginMode) {
             // authObs = this.authService.login(email, password)
             this.store.dispatch(new AuthActions.LoginStart({email: email, password: password}))
         } else {
-            authObs = this.authService.signUp(email, password)
+            this.store.dispatch(new AuthActions.SignupStart({email: email, password: password}))
         }
-
-        // authObs.subscribe(
-        //     data => {
-        //         this.isLoading = false
-        //         this.router.navigate(['/recipes'])
-        //     }, errorMessage => {
-        //         this.error = errorMessage
-        //         this.showErrorMessage(errorMessage)
-        //         this.isLoading = false
-        //     })
 
         form.reset()
     }
 
     onHandleError() {
-        this.error = null
+        this.store.dispatch(new AuthActions.ClearError())
     }
 
     ngOnDestroy(): void {
         if (this.closeSub) {
             this.closeSub.unsubscribe()
+        }
+
+        if (this.storeSub) {
+            this.storeSub.unsubscribe()
         }
     }
 
